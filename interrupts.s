@@ -74,15 +74,8 @@ handle:	li a7, 0x4442434E
 	and t1, t1, t2 # Clear the software interrupt pending flag (SSIP)
 	csrw sip, t1
 
-	# sret is not the correct instruction here to get out of the interrupt.
-	# sret would imply going down to the U-mode, but we didn't have that to
-	# begin with, as the entrance into the interrupt handler wasn't through
-	# the ecall instruction.
-	#
-	# Instead, we look at the CSR flag which has the instruction of where
-	# we stopped before handling the interrupt.
-	csrr t1, sepc
-	jr t1
+	# Return from the interrupt, unwind
+	sret
 
 	.section .handle.rodata
 handler_string:
