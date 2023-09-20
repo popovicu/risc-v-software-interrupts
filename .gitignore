@@ -1,0 +1,9 @@
+# Ignore everything
+*
+
+# Except
+!interrupts\.s
+!interrupts\.ld
+!Makefile
+!README.md
+!.gitignore
