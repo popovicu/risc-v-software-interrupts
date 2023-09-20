@@ -62,6 +62,9 @@ handle:	li a7, 0x4442434E
         li a0, 12
         and a1, a3, a4
         and a2, a3, a5
+	# This is really a nested interrupt and given that we're not particularly
+	# careful about the registers here, we just do it like so. It could corrupt
+	# some of the flags in the registers, we're just doing this for simplicity.
         ecall
 
 	# The bit is cleared on the pending register. This signifies that the
