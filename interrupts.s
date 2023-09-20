@@ -24,24 +24,10 @@ _start: li a7, 0x4442434E
 	lla t0, handle
 	csrw stvec, t0
 
-	# This flips the S-mode global interrupt flags. Without this, the
-	# interrupts in the S-mode are globally disabled, i.e. the other
-	# flags don't matter.
-	csrr t1, sstatus
-	ori t1, t1, 2 # Set the S-level interrupt enable flag (SIE)
-	csrw sstatus, t1
-
-	# This flips the correct flag in the S-mode interrupt level register.
-	# It's there specifically for the software interrupts.
-	csrr t1, sie
-	ori t1, t1, 2 # Set the software interrupt enable flag (SSIE)
-	csrw sie, t1
-
-	# Writing to the SIP register in this portion of the code will actually
-	# trigger the interrupt.
-	csrr t1, sip
-	ori t1, t1, 2 # Set the software interrupt pending flag (SSIP)
-	csrw sip, t1
+	li t1, 2
+	csrs sstatus, t1 # Set the S-level interrupt enable flag (SIE)
+	csrs sie, t1     # Set the software interrupt enable flag (SSIE)
+	csrs sip, t1     # Set the software interrupt pending flag (SSIP)
 
 	# After the software interrupt, we return here and keep going into the
 	# infinite loop.
@@ -69,10 +55,8 @@ handle:	li a7, 0x4442434E
 
 	# The bit is cleared on the pending register. This signifies that the
 	# interrupt has been taken care of.
-	csrr t1, sip
-	li t2, 0xFFFFFFFFFFFFFFFD
-	and t1, t1, t2 # Clear the software interrupt pending flag (SSIP)
-	csrw sip, t1
+	li t2, 2
+	csrc sip, t2
 
 	# Return from the interrupt, unwind
 	sret
