@@ -7,8 +7,7 @@
 	# https://popovicu.com/posts/risc-v-sbi-and-full-boot-process/
 _start: li a7, 0x4442434E
         li a6, 0x00
-1:      auipc a3, %pcrel_hi(debug_string)
-        addi a3, a3, %pcrel_lo(1b)
+	lla a3, debug_string
         li a4, 0x00000000FFFFFFFF
         li a5, 0xFFFFFFFF00000000
         li a0, 12
@@ -22,8 +21,7 @@ _start: li a7, 0x4442434E
 	# interrupts goes through this one routine (and it should internally
 	# route to the correct logic, in a real world case). The other approach
 	# is vectorized, but that is not what is done here.
-1:	auipc t0, %pcrel_hi(handle)
-        addi t0, t0, %pcrel_lo(1b)
+	lla t0, handle
 	csrw stvec, t0
 
 	# This flips the S-mode global interrupt flags. Without this, the
@@ -58,8 +56,7 @@ debug_string:
 	# print a debug message. Same logic as the above (copy/paste).
 handle:	li a7, 0x4442434E
         li a6, 0x00
-1:      auipc a3, %pcrel_hi(handler_string)
-        addi a3, a3, %pcrel_lo(1b)
+	lla a3, handler_string
         li a4, 0x00000000FFFFFFFF
         li a5, 0xFFFFFFFF00000000
         li a0, 12
