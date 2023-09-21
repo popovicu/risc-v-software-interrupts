@@ -7,12 +7,9 @@
 	# https://popovicu.com/posts/risc-v-sbi-and-full-boot-process/
 _start: li a7, 0x4442434E
         li a6, 0x00
-	lla a3, debug_string
-        li a4, 0x00000000FFFFFFFF
-        li a5, 0xFFFFFFFF00000000
         li a0, 12
-        and a1, a3, a4
-        and a2, a3, a5
+        lla a1, debug_string
+        li a2, 0
         ecall
 
 	# Load the pointer to the interrupt routine into the STVEC CSR.
@@ -42,12 +39,9 @@ debug_string:
 	# print a debug message. Same logic as the above (copy/paste).
 handle:	li a7, 0x4442434E
         li a6, 0x00
-	lla a3, handler_string
-        li a4, 0x00000000FFFFFFFF
-        li a5, 0xFFFFFFFF00000000
         li a0, 12
-        and a1, a3, a4
-        and a2, a3, a5
+        lla a1, handler_string
+        li a2, 0
 	# This is really a nested interrupt and given that we're not particularly
 	# careful about the registers here, we just do it like so. It could corrupt
 	# some of the flags in the registers, we're just doing this for simplicity.
